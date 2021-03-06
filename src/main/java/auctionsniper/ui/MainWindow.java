@@ -4,6 +4,7 @@ import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.table.AbstractTableModel;
 
 import auctionsniper.Main;
 
@@ -15,26 +16,53 @@ public class MainWindow extends JFrame {
   public static final String STATUS_WINNING = "Winning";
   public static final String STATUS_WON = "Won";
 
-  public static final String SNIPER_STATUS_NAME = "sniper status";
-  private final JLabel sniperStatus = createLabel(STATUS_JOINING);
+  public static final String SNIPERS_TABLE_NAME= "sniper status";
+  private final SnipersTableModel snipers = new SnipersTableModel();
 
   public MainWindow() {
     super("Auction Sniper");
     setName(Main.MAIN_WINDOW_NAME);
-    add(sniperStatus);
+    fillContentPane(makeSnipersTable());
     pack();
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setVisible(true);
   }
 
-  public void showStatus(String status) {
-    sniperStatus.setText(status);
+  private void fillContentPane(JTable snipersTable) {
+    final Container contentPane = getContentPane();
+    contentPane.setLayout(new BorderLayout());
+
+    contentPane.add(new JScrollPane(snipersTable), BorderLayout.CENTER);
   }
 
-  private static JLabel createLabel(String initialText) {
-    JLabel result = new JLabel(initialText);
-    result.setName(SNIPER_STATUS_NAME);
-    result.setBorder(new LineBorder(Color.BLACK));
-    return result;
+  private JTable makeSnipersTable() {
+    final JTable snipersTable = new JTable(snipers);
+    snipersTable.setName(SNIPERS_TABLE_NAME);
+    return snipersTable;
+  }
+
+  public void showStatus(String status) {
+    snipers.setStatusText(status);
+  }
+
+  public class SnipersTableModel extends AbstractTableModel {
+    private String statusText = STATUS_JOINING;
+
+    public int getColumnCount() {
+      return 1;
+    }
+
+    public int getRowCount() {
+      return 1;
+    }
+
+    public Object getValueAt(int rowIndex, int columnIndex) {
+      return statusText;
+    }
+
+    public void setStatusText(String newStatusText) {
+      statusText = newStatusText;
+      fireTableRowsUpdated(0, 0);
+    }
   }
 }
