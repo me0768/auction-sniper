@@ -53,7 +53,7 @@ public class Main {
 
     Auction auction = new XMPPAuction(chat);
     chat.addMessageListener(new AuctionMessageTranslator(
-        new AuctionSniper(auction, new SniperStateDisplayer()), connection.getUser()));
+        new AuctionSniper(itemId, auction, new SniperStateDisplayer()), connection.getUser()));
     auction.join();
   }
 
@@ -112,7 +112,7 @@ public class Main {
   public class SniperStateDisplayer implements SniperListener {
 
     @Override
-    public void sniperBidding() {
+    public void sniperBidding(SniperState sniperState) {
       showStatus(MainWindow.STATUS_BIDDING);
     }
 
