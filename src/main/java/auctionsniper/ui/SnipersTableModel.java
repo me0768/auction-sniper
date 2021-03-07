@@ -7,9 +7,9 @@ import auctionsniper.SniperSnapshot;
 import auctionsniper.SniperState;
 
 public class SnipersTableModel extends AbstractTableModel implements SniperListener {
-  private final static SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0, SniperState.JOINING);
+  public final static SniperSnapshot JOINING = new SniperSnapshot("", 0, 0, SniperState.JOINING);
   private final static String[] STATUS_TEXT = { "Joining", "Bidding", "Winning", "Lost", "Won" };
-  private SniperSnapshot sniperSnapshot = STARTING_UP;
+  private SniperSnapshot sniperSnapshot = JOINING;
 
 
   public int getColumnCount() {
@@ -27,6 +27,10 @@ public class SnipersTableModel extends AbstractTableModel implements SniperListe
   public void sniperStateChanged(SniperSnapshot newSniperSnapshot) {
     sniperSnapshot = newSniperSnapshot;
     fireTableRowsUpdated(0, 0);
+  }
+
+  public String getColumnName(int columnIndex) {
+    return Column.at(columnIndex).name;
   }
 
   public static String textFor(SniperState state) {
