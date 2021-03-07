@@ -16,14 +16,11 @@ class AuctionSniperTest {
 
   private static final String ITEM_ID = "item-id";
 
-  @Mock
-  private SniperListener sniperListener;
+  private SniperListener sniperListener = mock(SniperListener.class);
 
-  @Mock
-  private Auction auction;
+  private Auction auction = mock(Auction.class);
 
-  @InjectMocks
-  private AuctionSniper sniper;
+  private final AuctionSniper sniper = new AuctionSniper(ITEM_ID, auction, sniperListener);
 
   private SniperProcessState sniperState = SniperProcessState.IDLE;
 

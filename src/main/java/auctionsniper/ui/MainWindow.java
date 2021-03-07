@@ -3,10 +3,9 @@ package auctionsniper.ui;
 import java.awt.*;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.table.AbstractTableModel;
 
 import auctionsniper.Main;
+import auctionsniper.SniperState;
 
 public class MainWindow extends JFrame {
 
@@ -45,24 +44,8 @@ public class MainWindow extends JFrame {
     snipers.setStatusText(status);
   }
 
-  public class SnipersTableModel extends AbstractTableModel {
-    private String statusText = STATUS_JOINING;
-
-    public int getColumnCount() {
-      return 1;
-    }
-
-    public int getRowCount() {
-      return 1;
-    }
-
-    public Object getValueAt(int rowIndex, int columnIndex) {
-      return statusText;
-    }
-
-    public void setStatusText(String newStatusText) {
-      statusText = newStatusText;
-      fireTableRowsUpdated(0, 0);
-    }
+  public void sniperStatusChanged(SniperState state, String statusText) {
+    snipers.sniperStatusChanged(state, statusText);
   }
+
 }
