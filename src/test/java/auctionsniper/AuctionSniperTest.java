@@ -1,7 +1,10 @@
 package auctionsniper;
 
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import org.hamcrest.FeatureMatcher;
+import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,7 +38,8 @@ class AuctionSniperTest {
 
     ignoreStubs(auction);
 
-    sniperListener.sniperStateChanged(any(SniperSnapshot.class)); // 여기서는 상태 내용에 관심 없고 다른 테스트의 변화에 따른 수정이므로 이렇게 처리.
+    // allowing(sniperListener).sniperStateChanged(with(aSniperThatIs(SniperState.BIDDING)));
+    sniperListener.sniperStateChanged(refEq(new SniperSnapshot("", 0, 0, SniperState.BIDDING)));
     sniperState = SniperProcessState.BIDDING;
     verify(sniperListener, times(1)).sniperLost();
 
@@ -43,6 +47,13 @@ class AuctionSniperTest {
     //then(sniperState.is("bidding"));
     //verify(sniperListener, times(1)).sniperLost();
     //when(sniperState.is("bidding"));
+  }
+  private Matcher<SniperSnapshot> aSniperThatIs(SniperState state) {
+    return new FeatureMatcher<SniperSnapshot, SniperState>(equalTo(state), "sniper that is", "was") {
+      protected SniperState featureValueOf(SniperSnapshot actual) {
+        return actual.state;
+      }
+    };
   }
 
   @Test
