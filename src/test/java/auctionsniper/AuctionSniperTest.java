@@ -5,10 +5,8 @@ import static org.mockito.Mockito.*;
 
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import auctionsniper.AuctionEventListener.PriceSource;
@@ -24,13 +22,11 @@ class AuctionSniperTest {
 
   private final AuctionSniper sniper = new AuctionSniper(ITEM_ID, auction, sniperListener);
 
-  private SniperProcessState sniperState = SniperProcessState.IDLE;
-
   @Test
   void reports_lost_if_auction_closes_immediately() {
     sniper.auctionClosed();
 
-    verify(sniperListener, times(1)).sniperLost();
+    verify(sniperListener, times(1)).sniperStateChanged(refEq(new SniperSnapshot("", 0, 0, SniperState.LOST)));
   }
 
   @Test
@@ -42,8 +38,7 @@ class AuctionSniperTest {
 
     // allowing(sniperListener).sniperStateChanged(with(aSniperThatIs(SniperState.BIDDING)));
     sniperListener.sniperStateChanged(refEq(new SniperSnapshot("", 0, 0, SniperState.BIDDING)));
-    sniperState = SniperProcessState.BIDDING;
-    verify(sniperListener, times(1)).sniperLost();
+    verify(sniperListener, times(1)).sniperStateChanged(refEq(new SniperSnapshot("", 0, 0, SniperState.LOST)));
 
     //allowing(sniperListener).sniperBidding();
     //then(sniperState.is("bidding"));
@@ -89,10 +84,6 @@ class AuctionSniperTest {
     ignoreStubs(auction);
 
     verify(sniperListener).sniperStateChanged(new SniperSnapshot(ITEM_ID, 123, 0, SniperState.WINNING));
-    verify(sniperListener, times(1)).sniperWon();
-  }
-
-  public enum SniperProcessState {
-    IDLE, BIDDING, WINNING;
+    verify(sniperListener, times(1)).sniperStateChanged(refEq(new SniperSnapshot("", 0, 0, SniperState.WON)));
   }
 }
