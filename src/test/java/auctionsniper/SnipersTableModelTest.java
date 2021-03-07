@@ -1,6 +1,5 @@
 package auctionsniper;
 
-import static com.objogate.wl.swing.driver.ComponentDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -9,7 +8,6 @@ import static org.mockito.Mockito.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,12 +42,12 @@ public class SnipersTableModelTest {
     verify(listener, times(1)).tableChanged(refEq(new TableModelEvent(model, 0)));
 
     // 변경을 일으키는 이벤트
-    model.sniperStatusChanged(new SniperState("item-id", 555, 666), MainWindow.STATUS_BIDDING);
+    model.sniperStatusChanged(new SniperSnapshot("item-id", 555, 666, SniperState.BIDDING));
 
     assertColumnEquals(Column.ITEM_IDENTIFIER, "item-id");
     assertColumnEquals(Column.LAST_PRICE, 555);
     assertColumnEquals(Column.LAST_BID, 666);
-    assertColumnEquals(Column.SNIPER_STATUS, MainWindow.STATUS_BIDDING);
+    assertColumnEquals(Column.SNIPER_STATE, MainWindow.STATUS_BIDDING);
   }
 
   private void assertColumnEquals(Column column, Object expected) {

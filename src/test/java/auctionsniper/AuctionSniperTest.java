@@ -1,12 +1,9 @@
 package auctionsniper;
 
-import static com.objogate.wl.swing.driver.ComponentDriver.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import auctionsniper.AuctionEventListener.PriceSource;
@@ -38,7 +35,7 @@ class AuctionSniperTest {
 
     ignoreStubs(auction);
 
-    sniperListener.sniperBidding(any(SniperState.class)); // 여기서는 상태 내용에 관심 없고 다른 테스트의 변화에 따른 수정이므로 이렇게 처리.
+    sniperListener.sniperStateChanged(any(SniperSnapshot.class)); // 여기서는 상태 내용에 관심 없고 다른 테스트의 변화에 따른 수정이므로 이렇게 처리.
     sniperState = SniperProcessState.BIDDING;
     verify(sniperListener, times(1)).sniperLost();
 
@@ -57,7 +54,7 @@ class AuctionSniperTest {
     sniper.currentPrice(price, increment, PriceSource.FromOtherBidder);
 
     verify(auction, times(1)).bid(bid);
-    verify(sniperListener, atLeastOnce()).sniperBidding(new SniperState(ITEM_ID, price, bid));
+    verify(sniperListener, atLeastOnce()).sniperStateChanged(new SniperSnapshot(ITEM_ID, price, bid, SniperState.BIDDING));
   }
   
   @Test
