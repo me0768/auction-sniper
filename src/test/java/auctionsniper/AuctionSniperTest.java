@@ -5,8 +5,10 @@ import static org.mockito.Mockito.*;
 
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import auctionsniper.AuctionEventListener.PriceSource;
@@ -70,9 +72,13 @@ class AuctionSniperTest {
   
   @Test
   void reports_is_winning_when_current_price_comes_from_sniper() {
-    sniper.currentPrice(123, 45, PriceSource.FromSniper);
+    // listener가 snapshot에 들어이쓴 값을 수신할 수 있게 sniperWinnign으로부터 리스너를 호출하는 것을 sniperStateChanged()로 변경.
+    // 첫번째로 호출하면 스나이퍼가 입찰(Bidding)하고, 두번째로 호출하면 낙찰했다(Winning)고 알린다.
 
-    verify(sniperListener, atLeastOnce()).sniperWinning();
+    sniper.currentPrice(123, 12, PriceSource.FromOtherBidder);
+    sniper.currentPrice(135, 45, PriceSource.FromSniper);
+    verify(sniperListener, times(1)).sniperStateChanged(new SniperSnapshot(ITEM_ID, 123, 135, SniperState.BIDDING));
+    verify(sniperListener, atLeastOnce()).sniperStateChanged(new SniperSnapshot(ITEM_ID, 135, 135, SniperState.WINNING));
   }
 
   @Test
@@ -82,8 +88,7 @@ class AuctionSniperTest {
 
     ignoreStubs(auction);
 
-    sniperListener.sniperWinning();
-    sniperState = SniperProcessState.WINNING;
+    verify(sniperListener).sniperStateChanged(new SniperSnapshot(ITEM_ID, 123, 0, SniperState.WINNING));
     verify(sniperListener, times(1)).sniperWon();
   }
 
