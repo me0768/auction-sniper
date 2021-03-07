@@ -42,7 +42,7 @@ public class SnipersTableModelTest {
     verify(listener, times(1)).tableChanged(refEq(new TableModelEvent(model, 0)));
 
     // 변경을 일으키는 이벤트
-    model.sniperStatusChanged(new SniperSnapshot("item-id", 555, 666, SniperState.BIDDING));
+    model.sniperStateChanged(new SniperSnapshot("item-id", 555, 666, SniperState.BIDDING));
 
     assertColumnEquals(Column.ITEM_IDENTIFIER, "item-id");
     assertColumnEquals(Column.LAST_PRICE, 555);

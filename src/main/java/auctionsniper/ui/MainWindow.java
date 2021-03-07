@@ -16,10 +16,11 @@ public class MainWindow extends JFrame {
   public static final String STATUS_WON = "Won";
 
   public static final String SNIPERS_TABLE_NAME= "sniper status";
-  private final SnipersTableModel snipers = new SnipersTableModel();
+  private final SnipersTableModel snipers;
 
-  public MainWindow() {
+  public MainWindow(SnipersTableModel snipers) {
     super("Auction Sniper");
+    this.snipers = snipers;
     setName(Main.MAIN_WINDOW_NAME);
     fillContentPane(makeSnipersTable());
     pack();
@@ -38,10 +39,6 @@ public class MainWindow extends JFrame {
     final JTable snipersTable = new JTable(snipers);
     snipersTable.setName(SNIPERS_TABLE_NAME);
     return snipersTable;
-  }
-
-  public void sniperStatusChanged(SniperSnapshot state, String statusText) {
-    snipers.sniperStatusChanged(state);
   }
 
 }
